@@ -9,21 +9,20 @@ import numpy as np
 # List of parrots
 parrots = ["macaw", "cockatiel", "budgerigar", "lorikeet", "lovebird", "conure", "parakeet", "african grey", "amazon", "cockatoo", "eclectus", "pionus"]
 
-#def lambda_handler(event, context):
-def main():
+@app.route('/query', methods=['POST'])
+def query():
+    data = request.json
+    user_query = data.get('query')
+
     # Web scraping example from Wikipedia
     url = "https://en.wikipedia.org/wiki/Parrot"
     scraped_data = scrape_web_page(url)
 
     if scraped_data is None:
-        print("Error: Unable to fetch data from the web.")
-        return
+        return jsonify({"error": "Unable to fetch data from the web"}), 500
 
     # Preprocess the scraped data
     sentences = preprocess_text(scraped_data)
-
-    # User query
-    user_query = input("You: ")
 
     # Process user query
     processed_user_query = process_query(user_query)
@@ -32,16 +31,9 @@ def main():
     if is_related_to_parrots(processed_user_query):
         # Get the most relevant answer about parrots
         answer = get_answer(processed_user_query[0], sentences)
-        print("Bot: ", answer)
+        return jsonify({"response": answer})
     else:
-        print("Bot: Sorry, I'm here just to assist with parrots.")
-
-    # TODO implement
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
-
+        return jsonify({"response": "Sorry, I'm here just to assist with parrots."})
 
 # Check if the user query is related to parrots
 def is_related_to_parrots(query):
@@ -88,12 +80,5 @@ def get_answer(query, sentences):
     return sentences[most_similar_index]
 
 
-
-
-
-# Main function
-#def main():
-
-
 if __name__ == "__main__":
-    main()
+    app.run(host='0.0.0.0', port=5000)
