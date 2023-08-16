@@ -2,6 +2,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import nltk
+nltk.download('punkt')
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
@@ -9,20 +10,21 @@ import numpy as np
 # List of parrots
 parrots = ["macaw", "cockatiel", "budgerigar", "lorikeet", "lovebird", "conure", "parakeet", "african grey", "amazon", "cockatoo", "eclectus", "pionus"]
 
-@app.route('/query', methods=['POST'])
-def query():
-    data = request.json
-    user_query = data.get('query')
-
+#def lambda_handler(event, context):
+def main():
     # Web scraping example from Wikipedia
     url = "https://en.wikipedia.org/wiki/Parrot"
     scraped_data = scrape_web_page(url)
 
     if scraped_data is None:
-        return jsonify({"error": "Unable to fetch data from the web"}), 500
+        print("Error: Unable to fetch data from the web.")
+        return
 
     # Preprocess the scraped data
     sentences = preprocess_text(scraped_data)
+
+    # User query
+    user_query = input("You: ")
 
     # Process user query
     processed_user_query = process_query(user_query)
@@ -31,9 +33,16 @@ def query():
     if is_related_to_parrots(processed_user_query):
         # Get the most relevant answer about parrots
         answer = get_answer(processed_user_query[0], sentences)
-        return jsonify({"response": answer})
+        print("Bot: ", answer)
     else:
-        return jsonify({"response": "Sorry, I'm here just to assist with parrots."})
+        print("Bot: Sorry, I'm here just to assist with parrots.")
+
+    # TODO implement
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
+
 
 # Check if the user query is related to parrots
 def is_related_to_parrots(query):
@@ -80,5 +89,12 @@ def get_answer(query, sentences):
     return sentences[most_similar_index]
 
 
+
+
+
+# Main function
+#def main():
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    main()
