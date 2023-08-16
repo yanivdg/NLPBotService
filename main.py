@@ -1,5 +1,5 @@
-#import json
-from flask import Flask, request, jsonify
+import requests
+from flask import Flask, request
 from bs4 import BeautifulSoup
 import nltk
 nltk.download('punkt')
@@ -10,7 +10,7 @@ import numpy as np
 app = Flask(__name__)
 
 # List of parrots
-parrots = ["macaw", "cockatiel", "budgerigar", "lorikeet", "lovebird", "conure", "parakeet", "african grey", "amazon", "cockatoo", "eclectus", "pionus"]
+parrots = ["parrot","parrot","macaw", "cockatiel", "budgerigar", "lorikeet", "lovebird", "conure", "parakeet", "african grey", "amazon", "cockatoo", "eclectus", "pionus"]
 
 # Web scraping function
 def scrape_web_page(url):
@@ -26,12 +26,21 @@ def scrape_web_page(url):
 
 # Preprocess the scraped data
 def preprocess_text(text):
+    # Your preprocessing steps here (tokenization, stemming, etc.)
+    # For simplicity, let's just split the text into sentences.
     sentences = nltk.sent_tokenize(text)
     return sentences
 
 # Process user query
 def process_query(query):
     return preprocess_text(query)
+
+def calculate_similarity(query, sentences):
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
+    query_vector = tfidf_vectorizer.transform([query])
+    similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]  # Convert to NumPy array and access the first (and only) row
+    return similarity_scores
 
 # Check if the user query is related to parrots
 def is_related_to_parrots(query):
@@ -40,32 +49,42 @@ def is_related_to_parrots(query):
             return True
     return False
 
-# Calculate similarity
-def calculate_similarity(query, sentences):
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
-    query_vector = tfidf_vectorizer.transform([query])
-    similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]
-    return similarity_scores
-
-# Get answer
 def get_answer(query, sentences):
     similarity_scores = calculate_similarity(query, sentences)
     most_similar_index = np.argmax(similarity_scores)
     return sentences[most_similar_index]
 
-@app.route('/ask', methods=['POST'])
-def ask():
+@app.route('/parrot', methods=['POST'])
+def parrot_handler():
     data = request.get_json()
-    user_query = data['query']
+    user_query = data['user_query']
 
+    # Web scraping example from Wikipedia
+    url = "https://en.wikipedia.org/wiki/Parrot"
+    scraped_data = scrape_web_page(url)
+
+    if scraped_data is None:
+        return {
+            'response': "Error: Unable to fetch data from the web."
+        }
+
+    # Preprocess the scraped data
+    sentences = preprocess_text(scraped_data)
+
+    # Process user query
     processed_user_query = process_query(user_query)
 
+    # Check if the user query is related to parrots
     if is_related_to_parrots(processed_user_query):
+        # Get the most relevant answer about parrots
         answer = get_answer(processed_user_query[0], sentences)
-        return jsonify({"response": answer})
+        return {
+            'response': answer
+        }
     else:
-        return jsonify({"response": "Sorry, I'm here just to assist with parrots."})
+        return {
+            'response': "Sorry, I'm here just to assist with parrots."
+        }
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=False)
