@@ -22,4 +22,5 @@ steps:
 - script: |
     python test.py
     python main.py
+    python pass.py
   displayName: 'Run program'
