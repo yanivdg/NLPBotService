@@ -20,5 +20,10 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
+    python -m pip install flake8
+    flake8 .
+  displayName: 'Run lint tests'
+  
+- script: |
     python main.py
   displayName: 'Run program'
