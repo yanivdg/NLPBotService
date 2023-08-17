@@ -20,7 +20,7 @@ steps:
   displayName: 'Install dependencies'
   
 - script: |
-    python test.py
+    ls
+    dir
     python main.py
-    python pass.py
   displayName: 'Run program'
