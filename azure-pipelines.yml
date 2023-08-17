@@ -18,7 +18,7 @@ steps:
     python -m venv venv
     source venv/bin/activate
     pip install --upgrade pip
-    pip install -r requirements.txt
+    pip install -r .devcontainer/requirements.txt
   displayName: 'Install dependencies'
 
 - script: |
