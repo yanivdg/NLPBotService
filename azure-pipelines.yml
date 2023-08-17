@@ -9,7 +9,7 @@ strategy:
       python.version: '3.11'
 
 variables:
-  target_commit: 'f8168fe3'  # Replace with the desired commit hash or ID
+  target_commit: 'f8168fe3ade091baee9cc447c4dcde17fa50956b'  # Replace with the desired commit hash or ID
 
 steps:
 - task: UsePythonVersion@0
