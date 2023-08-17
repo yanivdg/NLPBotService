@@ -9,6 +9,9 @@ strategy:
       python.version: '3.11'
 
 steps:
+- powershell: Remove-Item -Recurse -Force $(Build.SourcesDirectory)/*
+  displayName: 'Clean Workspace'
+  condition: succeededOrFailed()
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '$(python.version)'
