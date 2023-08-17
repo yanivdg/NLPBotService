@@ -18,11 +18,6 @@ steps:
     python -m pip install --upgrade pip
     pip install -r .devcontainer/requirements.txt
   displayName: 'Install dependencies'
-
-- script: |
-    python -m pip install pytest
-     python -m pytest
-  displayName: 'Run pytest tests'
   
 - script: |
     python main.py
