@@ -8,6 +8,9 @@ strategy:
     Python311:
       python.version: '3.11'
 
+variables:
+  target_commit: 'f8168fe3'  # Replace with the desired commit hash or ID
+
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -20,7 +23,6 @@ steps:
   displayName: 'Install dependencies'
   
 - script: |
-    ls
-    dir
-    python $(Build.SourcesDirectory)/main.py
-  displayName: 'Run program'
+    git checkout $(target_commit)
+    python main.py
+  displayName: 'Run Python script at specific commit'
