@@ -21,8 +21,8 @@ steps:
 
 - script: |
     python -m pip install pytest
-    pytest main.py
-  displayName: 'Run lint tests'
+     python -m pytest
+  displayName: 'Run pytest tests'
   
 - script: |
     python main.py
