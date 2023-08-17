@@ -1,90 +1,62 @@
-import requests
-from flask import Flask, request
-from bs4 import BeautifulSoup
 import nltk
-nltk.download('punkt')
+import json
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 
-app = Flask(__name__)
+nltk.download('punkt')
 
-# List of parrots
-parrots = ["parrot","parrot","macaw", "cockatiel", "budgerigar", "lorikeet", "lovebird", "conure", "parakeet", "african grey", "amazon", "cockatoo", "eclectus", "pionus"]
-
-# Web scraping function
-def scrape_web_page(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, "html.parser")
-            paragraphs = soup.find_all("p")
-            data = " ".join([para.text for para in paragraphs])
-            return data
-    except requests.exceptions.RequestException:
-        return None
-
-# Preprocess the scraped data
 def preprocess_text(text):
-    # Your preprocessing steps here (tokenization, stemming, etc.)
-    # For simplicity, let's just split the text into sentences.
     sentences = nltk.sent_tokenize(text)
     return sentences
-
-# Process user query
-def process_query(query):
-    return preprocess_text(query)
 
 def calculate_similarity(query, sentences):
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
     query_vector = tfidf_vectorizer.transform([query])
-    similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]  # Convert to NumPy array and access the first (and only) row
+    similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]
     return similarity_scores
 
-# Check if the user query is related to parrots
-def is_related_to_parrots(query):
-    for q in query:
-        if any(parrot in q.lower() for parrot in parrots):
-            return True
-    return False
-
-def get_answer(query, sentences):
+def get_best_answer(query, content_list):
+    sentences = []
+    for content in content_list:
+        sentences.extend(preprocess_text(content))
     similarity_scores = calculate_similarity(query, sentences)
     most_similar_index = np.argmax(similarity_scores)
     return sentences[most_similar_index]
 
-@app.route('/parrot', methods=['POST'])
-def parrot_handler():
-    data = request.get_json()
-    user_query = data['user_query']
+# Function to scrape content from a webpage (Replace this with your web scraping logic)
+def scrape_web_page(url):
+    # Add your web scraping logic here
+    # Return the extracted content as a string
+    return "Content from " + url
 
-    # Web scraping example from Wikipedia
-    url = "https://en.wikipedia.org/wiki/Parrot"
-    scraped_data = scrape_web_page(url)
+def lambda_handler(event, context):
+    print(event)
+    user_question = event["question"]
 
-    if scraped_data is None:
+    # Assuming you have fetched the related sites URLs
+    related_sites = [
+        "https://www.example.com/site1",
+        "https://www.example.com/site2",
+        # Add more URLs
+    ]
+
+    # Extract content from the related sites
+    site_contents = []
+    for url in related_sites:
+        content = scrape_web_page(url)
+        site_contents.append(content)
+
+    # Assuming you have determined that the user's question is related to parrots
+    if "parrot" in user_question.lower():
+        best_answer = get_best_answer(user_question, site_contents)
         return {
-            'response': "Error: Unable to fetch data from the web."
-        }
-
-    # Preprocess the scraped data
-    sentences = preprocess_text(scraped_data)
-
-    # Process user query
-    processed_user_query = process_query(user_query)
-
-    # Check if the user query is related to parrots
-    if is_related_to_parrots(processed_user_query):
-        # Get the most relevant answer about parrots
-        answer = get_answer(processed_user_query[0], sentences)
-        return {
-            'response': answer
+            "statusCode": 200,
+            "body": json.dumps({"best_answer": best_answer})
         }
     else:
         return {
-            'response': "Sorry, I'm here just to assist with parrots."
+            "statusCode": 200,
+            "body": json.dumps({"message": "Not a parrot-related question."})
         }
-
-if __name__ == '__main__':
-    app.run(debug=False)

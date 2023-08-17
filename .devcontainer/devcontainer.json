@@ -1,0 +1,12 @@
+{
+    "name": "Lambda Development",
+    "image": "python:3.11",
+    "extensions": [
+      "ms-python.python"
+    ],
+    "settings": {
+      "python.pythonPath": "/usr/local/bin/python"
+    },
+    "postCreateCommand": "pip install -r requirements.txt"
+  }
+  
