@@ -15,8 +15,10 @@ steps:
   displayName: 'Use Python $(python.version)'
 
 - script: |
-    python -m pip install --upgrade pip
-    pip install -r .devcontainer/requirements.txt
+    python -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install -r requirements.txt
   displayName: 'Install dependencies'
 
 - script: |
