@@ -20,5 +20,6 @@ steps:
   displayName: 'Install dependencies'
   
 - script: |
+    python test.py
     python main.py
   displayName: 'Run program'
