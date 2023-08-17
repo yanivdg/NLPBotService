@@ -21,4 +21,4 @@ steps:
 
 - script: |
     python main.py
-  displayName: run program
+  displayName: 'Run program'
