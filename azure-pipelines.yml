@@ -22,5 +22,5 @@ steps:
 - script: |
     ls
     dir
-    python main.py
+    python $(Build.SourcesDirectory)/main.py
   displayName: 'Run program'
