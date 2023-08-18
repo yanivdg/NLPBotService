@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 
+par_str = ["Macaw","Cockatoo","Budgerigar","Budgie","Conure","Amazon","Parrot","Lorikeet","Eclectus","Kea","Lovebird","Parakeet","Pionus","Quaker","Caique","Ringneck","Lory","Rosella","Cockatiel","Ararauna","Poicephalus"]
 nltk.download('punkt')
 app = Flask(__name__)
 
@@ -23,6 +24,25 @@ def get_answer():
             #user_question = event["question"]
             data = request.get_json()
             user_question = data["question"]
+
+             # Assuming you have determined that the user's question is related to parrots
+            par_str = (','.join(par_str)).lower().split()
+            matching_parrots = [bird for bird in par_str if bird.lower() in user_question.lower()]
+            if matching_parrots:
+            #if "parrot" in user_question.lower():
+                logging.info(f"User question: {user_question}")
+                best_answer = get_best_answer(user_question, site_contents)
+	            # Log the best answer
+                logging.info(f"Best answer: {best_answer}")
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({"best_answer": best_answer})
+                }
+            else:
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({"message": "Not a parrot-related question."})
+                }
             # Log a message
             #logging.info(f"Received question: {user_question}")
             response = requests.post('https://0ai42tfv4e.execute-api.us-west-1.amazonaws.com/default/MyNLPSearchService', json={"subject": user_question})
@@ -41,24 +61,14 @@ def get_answer():
             #]
             # Extract content from the related sites
             site_contents = []
+            cnt = 0
             for url in related_sites:
                 content = scrape_web_page(url)
+                if len(content) > 0:
+                     cnt = cnt + 1
                 site_contents.append(content)
-            # Assuming you have determined that the user's question is related to parrots
-            if "parrot" in user_question.lower():
-                logging.info(f"User question: {user_question}")
-                best_answer = get_best_answer(user_question, site_contents)
-	            # Log the best answer
-                logging.info(f"Best answer: {best_answer}")
-                return {
-                    "statusCode": 200,
-                    "body": json.dumps({"best_answer": best_answer})
-                }
-            else:
-                return {
-                    "statusCode": 200,
-                    "body": json.dumps({"message": "Not a parrot-related question."})
-                }
+            result = cnt / len(related_sites)
+            print(result)  
     except Exception as error:
             print("An error occurred:", error)
             return {
