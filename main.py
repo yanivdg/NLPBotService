@@ -1,4 +1,3 @@
-#
 from flask import Flask, request, jsonify
 import logging
 import nltk
@@ -7,15 +6,17 @@ import requests
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
-
+#ver 18082023_1515
 nltk.download('punkt')
+app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 def preprocess_text(text):
     sentences = nltk.sent_tokenize(text)
     return sentences
 
-# Your other functions remain unchanged
-app = Flask(__name__)
 @app.route('/answer', methods=['POST'])
 def get_answer():
     data = request.get_json()
@@ -90,11 +91,10 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Not a parrot-related question."})
         }
 
-    # Configure logging
-    logging.basicConfig(level=logging.INFO)
 
-    if __name__ == '__main__':
-        host = '0.0.0.0'
-        port = 5000
-        logging.info(f"Starting Flask app on {host}:{port}...")
-        app.run(host=host, port=port)
+
+if __name__ == '__main__':
+    host = '0.0.0.0'
+    port = 5000
+    logging.info(f"Starting Flask app on {host}:{port}...")
+    app.run(host=host, port=port)
