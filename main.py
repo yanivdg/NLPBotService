@@ -7,7 +7,6 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 
-par_str = ["Macaw","Cockatoo","Budgerigar","Budgie","Conure","Amazon","Parrot","Lorikeet","Eclectus","Kea","Lovebird","Parakeet","Pionus","Quaker","Caique","Ringneck","Lory","Rosella","Cockatiel","Ararauna","Poicephalus"]
 nltk.download('punkt')
 app = Flask(__name__)
 
@@ -21,24 +20,23 @@ def preprocess_text(text):
 @app.route('/answer', methods=['POST'])
 def get_answer():
     try:
+            par_str = [
+                            "Macaw","Cockatoo","Budgerigar","Budgie","Conure",
+                            "Amazon","Parrot","Lorikeet","Eclectus","Kea","Lovebird","Parakeet",
+                            "Pionus","Quaker","Caique","Ringneck","Lory","Rosella","Cockatiel",
+                            "Ararauna","Poicephalus"
+                            ]
             #user_question = event["question"]
             data = request.get_json()
             user_question = data["question"]
 
              # Assuming you have determined that the user's question is related to parrots
-            par_str = (','.join(par_str)).lower().split()
+            par_str = (','.join(par_str)).lower().split(',')
             matching_parrots = [bird for bird in par_str if bird.lower() in user_question.lower()]
-            if matching_parrots:
-            #if "parrot" in user_question.lower():
-                logging.info(f"User question: {user_question}")
-                best_answer = get_best_answer(user_question, site_contents)
-	            # Log the best answer
-                logging.info(f"Best answer: {best_answer}")
-                return {
-                    "statusCode": 200,
-                    "body": json.dumps({"best_answer": best_answer})
-                }
-            else:
+            site_contents = []
+            cnt = 0
+            if not matching_parrots:
+            #if "parrot" in user_question.lower()::
                 return {
                     "statusCode": 200,
                     "body": json.dumps({"message": "Not a parrot-related question."})
@@ -60,15 +58,21 @@ def get_answer():
             # Add more URLs
             #]
             # Extract content from the related sites
-            site_contents = []
-            cnt = 0
             for url in related_sites:
-                content = scrape_web_page(url)
-                if len(content) > 0:
-                     cnt = cnt + 1
-                site_contents.append(content)
+                    content = scrape_web_page(url)
+                    if len(content) > 0:
+                        cnt = cnt + 1
+                    site_contents.append(content)
             result = cnt / len(related_sites)
             print(result)  
+            logging.info(f"User question: {user_question}")
+            best_answer = get_best_answer(user_question, site_contents)
+	        # Log the best answer
+            logging.info(f"Best answer: {best_answer}")
+            return {
+                    "statusCode": 200,
+                    "body": json.dumps({"best_answer": best_answer})
+                }
     except Exception as error:
             print("An error occurred:", error)
             return {
