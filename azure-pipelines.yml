@@ -20,6 +20,6 @@ steps:
   displayName: 'Install dependencies'
   
 - script: |
-    type main.py
+    less main.py
     python main.py
   displayName: 'Run Python script at specific commit'
