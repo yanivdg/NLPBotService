@@ -18,8 +18,19 @@ steps:
       python -m pip install --upgrade pip
       pip install -r $(Build.SourcesDirectory)/.devcontainer/requirements.txt
   displayName: 'Install dependencies'
-  
+
+- script: |  
+      git config --global user.email "yaniv.dg.work@gmail.com"
+      git config --global user.name "Yaniv"
+      git add .
+      git commit -m "Update file via Azure DevOps"
+      git remote add github https://github.com/yanivdg/NLPBotService
+      git push github your-branch-name
+      displayName: 'Commit and Push Changes'
+      env:
+      GITHUB_TOKEN: $(PAT_SECRET_VARIABLE)
+
 - script: |
     less main.py
     python main.py
-  displayName: 'Run Python script at specific commit'
+  displayName: 'Run Program'
