@@ -15,7 +15,7 @@ def preprocess_text(text):
     return sentences
 
 # Your other functions remain unchanged
-
+app = Flask(__name__)
 @app.route('/answer', methods=['POST'])
 def get_answer():
     data = request.get_json()
@@ -90,8 +90,6 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Not a parrot-related question."})
         }
 
-    app = Flask(__name__)
-
     # Configure logging
     logging.basicConfig(level=logging.INFO)
 
@@ -99,4 +97,4 @@ def lambda_handler(event, context):
         host = '0.0.0.0'
         port = 5000
         logging.info(f"Starting Flask app on {host}:{port}...")
-	app.run(host=host, port=port)
+        app.run(host=host, port=port)
