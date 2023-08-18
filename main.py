@@ -96,7 +96,7 @@ def lambda_handler(event, context):
     logging.basicConfig(level=logging.INFO)
 
     if __name__ == '__main__':
-    host = '0.0.0.0'
-    port = 5000
-    logging.info(f"Starting Flask app on {host}:{port}...")
-    app.run(host=host, port=port)
+        host = '0.0.0.0'
+        port = 5000
+        logging.info(f"Starting Flask app on {host}:{port}...")
+	app.run(host=host, port=port)
