@@ -24,9 +24,9 @@ steps:
       git config --global user.name "Yaniv"
       ls
       git add main.py
-      git commit -m "Update file via Azure DevOps" --force
+      git commit -m "Update file via Azure DevOps"
       git remote add github https://github.com/yanivdg/NLPBotService
-      git push github master --force
+      git push github master
       displayName: 'Commit and Push Changes'
       env:
       GITHUB_TOKEN: $(PAT_SECRET_VARIABLE)
