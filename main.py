@@ -27,7 +27,7 @@ def get_answer():
 
     if "parrot" in user_question.lower():
         best_answer = get_best_answer(user_question, site_contents)
-         logging.info(f"Best answer: {best_answer}")
+         #logging.info(f"Best answer: {best_answer}")
         return jsonify({"best_answer": best_answer})
     else:
         return jsonify({"message": "Not a parrot-related question."})
