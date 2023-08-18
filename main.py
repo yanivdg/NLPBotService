@@ -1,5 +1,9 @@
+#
+from flask import Flask, request, jsonify
+import logging
 import nltk
 import json
+import requests
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
@@ -9,6 +13,23 @@ nltk.download('punkt')
 def preprocess_text(text):
     sentences = nltk.sent_tokenize(text)
     return sentences
+
+# Your other functions remain unchanged
+
+@app.route('/answer', methods=['POST'])
+def get_answer():
+    data = request.get_json()
+    user_question = data["question"]
+
+    # Log a message
+    logging.info(f"Received question: {user_question}")
+
+    if "parrot" in user_question.lower():
+        logging.info(f"Best answer: {best_answer}")
+        best_answer = get_best_answer(user_question, site_contents)
+        return jsonify({"best_answer": best_answer})
+    else:
+        return jsonify({"message": "Not a parrot-related question."})
 
 def calculate_similarity(query, sentences):
     tfidf_vectorizer = TfidfVectorizer()
@@ -25,22 +46,28 @@ def get_best_answer(query, content_list):
     most_similar_index = np.argmax(similarity_scores)
     return sentences[most_similar_index]
 
-# Function to scrape content from a webpage (Replace this with your web scraping logic)
 def scrape_web_page(url):
-    # Add your web scraping logic here
-    # Return the extracted content as a string
-    return "Content from " + url
+    # web scraping logic 
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text  # Return the HTML content of the page
+    else:
+        return "Failed to scrape content from " + url
 
 def lambda_handler(event, context):
     print(event)
     user_question = event["question"]
 
+    response = requests.post('https://0ai42tfv4e.execute-api.us-west-1.amazonaws.com/default/MyNLPSearchService', 
+                        json={"subject": user_question})
+
     # Assuming you have fetched the related sites URLs
-    related_sites = [
-        "https://www.example.com/site1",
-        "https://www.example.com/site2",
+    related_sites = response.body
+    #[
+    #    "https://www.example.com/site1",
+    #    "https://www.example.com/site2",
         # Add more URLs
-    ]
+    #]
 
     # Extract content from the related sites
     site_contents = []
@@ -51,6 +78,8 @@ def lambda_handler(event, context):
     # Assuming you have determined that the user's question is related to parrots
     if "parrot" in user_question.lower():
         best_answer = get_best_answer(user_question, site_contents)
+	# Log the best answer
+        logging.info(f"Best answer: {best_answer}")
         return {
             "statusCode": 200,
             "body": json.dumps({"best_answer": best_answer})
@@ -60,3 +89,14 @@ def lambda_handler(event, context):
             "statusCode": 200,
             "body": json.dumps({"message": "Not a parrot-related question."})
         }
+
+    app = Flask(__name__)
+
+    # Configure logging
+    logging.basicConfig(level=logging.INFO)
+
+    if __name__ == '__main__':
+    host = '0.0.0.0'
+    port = 5000
+    logging.info(f"Starting Flask app on {host}:{port}...")
+    app.run(host=host, port=port)
