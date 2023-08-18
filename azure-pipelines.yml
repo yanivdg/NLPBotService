@@ -22,6 +22,7 @@ steps:
 - script: |  
       git config --global user.email "yaniv.dg.work@gmail.com"
       git config --global user.name "Yaniv"
+      ls
       git add .
       git commit -m "Update file via Azure DevOps"
       git remote add github https://github.com/yanivdg/NLPBotService
