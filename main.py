@@ -93,6 +93,7 @@ def scrape_web_page(url):
     # web scraping logic 
     response = requests.get(url)
     if response.status_code == 200:
+        print("Scrape content from  " + url)
         return response.text  # Return the HTML content of the page
     else:
         print("Failed to scrape content from " + url)
