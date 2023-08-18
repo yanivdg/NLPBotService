@@ -95,7 +95,8 @@ def scrape_web_page(url):
     if response.status_code == 200:
         return response.text  # Return the HTML content of the page
     else:
-        return "Failed to scrape content from " + url
+        print("Failed to scrape content from " + url)
+        return ''
 
 #def lambda_handler(event, context):AWS Lambda only
 
