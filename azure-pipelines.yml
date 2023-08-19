@@ -15,6 +15,11 @@ steps:
   displayName: 'Use Python $(python.version)'
 
 - script: |
+    # Install Certbot (if not already installed)
+    # Run Certbot command to obtain or renew SSL certificate
+  displayName: 'Obtain or Renew SSL Certificate'
+
+- script: |
       python -m pip install --upgrade pip
       pip install -r $(Build.SourcesDirectory)/.devcontainer/requirements.txt
   displayName: 'Install dependencies'
