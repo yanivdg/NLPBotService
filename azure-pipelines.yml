@@ -39,11 +39,11 @@ steps:
   displayName: 'install certbot'
 
 - script: | 
-    export MY_PASSPHRASE=a1b2c3d4
+    #export MY_PASSPHRASE=a1b2c3d4
     #openssl genpkey -algorithm RSA -out key.pem -aes256
-    openssl genpkey -algorithm RSA -out key.pem -aes256 -pass env:MY_PASSPHRASE
+    #openssl genpkey -algorithm RSA -out key.pem -aes256 -pass env:MY_PASSPHRASE
     #openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-    openssl req -new -key key.pem -out csr.pem
+    #openssl req -new -key key.pem -out csr.pem
   displayName: 'SSL Cert openssl'
 
 - script: | 
