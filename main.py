@@ -8,10 +8,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 
 nltk.download('punkt')
+nltk.download('stopwords')
 app = Flask(__name__)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+
+tfidf_vectorizer = TfidfVectorizer(stop_words="english")
 
 def preprocess_text(text):
     sentences = nltk.sent_tokenize(text)
@@ -28,13 +31,11 @@ def get_answer():
                             ]
             #user_question = event["question"]
             data = request.get_json()
-            user_question = data["question"]
+            user_question = data["question"].lower()
 
              # Assuming you have determined that the user's question is related to parrots
             par_str = (','.join(par_str)).lower().split(',')
-            matching_parrots = [bird for bird in par_str if bird.lower() in user_question.lower()]
-            site_contents = []
-            cnt = 0
+            matching_parrots = [bird for bird in par_str if bird.lower() in user_question]
             if not matching_parrots:
             #if "parrot" in user_question.lower()::
                 return {
@@ -51,12 +52,8 @@ def get_answer():
             # Print the list of URLs
             print(body_list)
             related_sites  = body_list 
-            # Assuming you have fetched the related sites URLs
-            #[
-            #    "https://www.example.com/site1",
-            #    "https://www.example.com/site2",
-            # Add more URLs
-            #]
+            site_contents = []
+            cnt = 0
             # Extract content from the related sites
             for url in related_sites:
                     content = scrape_web_page(url)
@@ -76,41 +73,55 @@ def get_answer():
     except Exception as error:
             print("An error occurred:", error)
             return {
-                "statusCode": error.args[0],
+                "statusCode":600,
                 "body": json.dumps(f"An error occurred:, {error}")
                 }
 
+
+#def calculate_similarity(query, sentences):
+#    tfidf_matrix = tfidf_vectorizer.transform(sentences)
+#    query_vector = tfidf_vectorizer.transform([query])
+#    similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]
+#    return similarity_scores
+
 def calculate_similarity(query, sentences):
-    tfidf_vectorizer = TfidfVectorizer()
+    # Fit and transform the vectorizer with the sentences
     tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
+    # Transform the query using the same vectorizer
     query_vector = tfidf_vectorizer.transform([query])
+    # Calculate similarity scores
     similarity_scores = np.dot(query_vector, tfidf_matrix.T).toarray()[0]
     return similarity_scores
 
 def get_best_answer(query, content_list):
     try:
-        sentences = []
-        for content in content_list:
-            print(content)
-            sentences.extend(preprocess_text(content))
+        sentences = [sentence for content in content_list for sentence in preprocess_text(content)]
         similarity_scores = calculate_similarity(query, sentences)
         most_similar_index = np.argmax(similarity_scores)
         return sentences[most_similar_index]
     except Exception as error:
                 print("An error occurred:", error)
                 return {
-                    "statusCode": error.args[0],
+                    "statusCode": 600,
                     "body": json.dumps(f"An error occurred:, {error}")
                     }
 
+
 def scrape_web_page(url):
-    # web scraping logic 
-    response = requests.get(url)
-    if response.status_code == 200:
-        print("Scrape content from  " + url)
-        return response.text  # Return the HTML content of the page
-    else:
-        print("Failed to scrape content from " + url)
+    try:
+        response = requests.get(url, timeout=10)  # Set timeout in seconds
+        
+        if response.status_code == 200:
+            print("Scrape content from " + url)
+            return response.text  # Return the HTML content of the page
+        else:
+            print("Failed to scrape content from " + url)
+            return ''
+    except requests.Timeout:
+        print("Timeout while scraping " + url)
+        return ''
+    except Exception as error:
+        print("An error occurred while scraping " + url + ": " + str(error))
         return ''
 
 #def lambda_handler(event, context):AWS Lambda only
