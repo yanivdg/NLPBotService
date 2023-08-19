@@ -25,7 +25,7 @@ steps:
   displayName: 'Get Public IP'
 
 - powershell: |
-    $dnsName = "DR_PARR-BOT"  # Replace with your actual DNS name
+    $dnsName = "DR-PARRBOT"  # Replace with your actual DNS name
     Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
   displayName: 'Set DNS Name'
 
@@ -35,7 +35,7 @@ steps:
     sudo apt-get install -y certbot python3-certbot-nginx  # Install Certbot for NGINX
 
     # Run Certbot command to obtain or renew SSL certificate (non-interactive mode)
-    sudo certbot --nginx -d www.DR_PARR-BOT.com --non-interactive --agree-tos --email yanivdg@live.com
+    sudo certbot --nginx -d www.DR-PARRBOT.com --non-interactive --agree-tos --email yanivdg@live.com
   displayName: 'Obtain or Renew SSL Certificate'
 
 - script: |
