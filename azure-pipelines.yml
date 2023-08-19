@@ -25,7 +25,7 @@ steps:
   displayName: 'Get Public IP'
 
 - powershell: |
-    $dnsName = "your-dns-name-here"  # Replace with your actual DNS name
+    $dnsName = "DR_PARR-BOT"  # Replace with your actual DNS name
     Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
   displayName: 'Set DNS Name'
 
