@@ -15,15 +15,6 @@ steps:
   displayName: 'Use Python $(python.version)'
 
 - script: |
-    # Install Certbot (if not already installed)
-    sudo apt-get update
-    sudo apt-get install -y certbot python3-certbot-nginx  # Install Certbot for NGINX
-
-    # Run Certbot command to obtain or renew SSL certificate (non-interactive mode)
-    sudo certbot --nginx --non-interactive --agree-tos --email yanivdg@live.com
-  displayName: 'Obtain or Renew SSL Certificate'
-
-- script: |
       python -m pip install --upgrade pip
       pip install -r $(Build.SourcesDirectory)/.devcontainer/requirements.txt
   displayName: 'Install dependencies'
@@ -37,6 +28,15 @@ steps:
     $dnsName = "DR_PARR-BOT"  # Replace with your actual DNS name
     Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
   displayName: 'Set DNS Name'
+
+- script: |
+    # Install Certbot (if not already installed)
+    sudo apt-get update
+    sudo apt-get install -y certbot python3-certbot-nginx  # Install Certbot for NGINX
+
+    # Run Certbot command to obtain or renew SSL certificate (non-interactive mode)
+    sudo certbot --nginx -d www.DR_PARR-BOT.com --non-interactive --agree-tos --email yanivdg@live.com
+  displayName: 'Obtain or Renew SSL Certificate'
 
 - script: |
     echo "Public IP: $(PublicIP)"
