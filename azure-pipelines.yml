@@ -19,12 +19,6 @@ steps:
       pip install -r $(Build.SourcesDirectory)/.devcontainer/requirements.txt
   displayName: 'Install dependencies'
 
-- script: |
-    less main.py
-    #python main.py
-    gunicorn -w 4 -b 0.0.0.0:5000 main:app
-  displayName: 'Run Program'
-
 - powershell: |
     $publicIP = Invoke-RestMethod -Uri http://ipinfo.io/json | Select-Object -ExpandProperty ip
     Write-Host "##vso[task.setvariable variable=PublicIP]$publicIP"
@@ -40,3 +34,9 @@ steps:
     echo "DNS Name: $(DNSName)"
     # Use these values to access your service
   displayName: 'Print Values'
+
+- script: |
+    less main.py
+    #python main.py
+    gunicorn -w 4 -b 0.0.0.0:5000 main:app
+  displayName: 'Run Program'
