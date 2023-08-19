@@ -26,7 +26,7 @@ steps:
 
 - powershell: |
     # Install the Azure PowerShell module if not already installed
-    Install-Module -Name Az
+    Install-Module -Name Az -AllowClobber -Force
     # Connect to your Azure account
     Connect-AzAccount
     # Create a DNS zone
