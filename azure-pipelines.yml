@@ -25,17 +25,6 @@ steps:
   displayName: 'Get Public IP'
 
 - powershell: |
-    # Install the Azure PowerShell module if not already installed
-    Install-Module -Name Az -AllowClobber -Force
-    # Connect to your Azure account
-    Connect-AzAccount
-    # Create a DNS zone
-    New-AzDnsZone -ResourceGroupName "YourResourceGroup" -Name "DR-PARRBOT.com"
-    # Add an A record to the DNS zone
-    Add-AzDnsRecordSet -ResourceGroupName "YourResourceGroup" -ZoneName "DR-PARRBOT.com" -RecordType A -Name "www" -IPv4Address "192.168.1.1"
-  displayName: 'creating domain'
-
-- powershell: |
     $dnsName = "DR-PARRBOT"  # Replace with your actual DNS name
     Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
   displayName: 'Set DNS Name'
