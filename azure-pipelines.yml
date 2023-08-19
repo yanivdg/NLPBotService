@@ -43,7 +43,7 @@ steps:
     #openssl genpkey -algorithm RSA -out key.pem -aes256
     openssl genpkey -algorithm RSA -out key.pem -aes256 -pass env:MY_PASSPHRASE
     #openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-    displayName: 'SSL Cert openssl'
+  displayName: 'SSL Cert openssl'
 
 - script: | 
     echo "Public IP: $(PublicIP)"
