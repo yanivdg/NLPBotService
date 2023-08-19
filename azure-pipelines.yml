@@ -34,12 +34,15 @@ steps:
     sudo apt-get update
     sudo apt-get install -y certbot python3-certbot-nginx  # Install Certbot for NGINX
     
-    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
     # Run Certbot command to obtain or renew SSL certificate (non-interactive mode)
     #sudo certbot --nginx -d www.DR-PARRBOT.com --non-interactive --agree-tos --email yanivdg@live.com
-  displayName: 'Obtain or Renew SSL Certificate'
+  displayName: 'install certbot'
 
-- script: |
+- script: | 
+    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+    displayName: 'Obtain or Renew SSL Certificate with openssl'
+
+- script: | 
     echo "Public IP: $(PublicIP)"
     echo "DNS Name: $(DNSName)"
     # Use these values to access your service
