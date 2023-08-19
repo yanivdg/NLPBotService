@@ -16,7 +16,11 @@ steps:
 
 - script: |
     # Install Certbot (if not already installed)
+    sudo apt-get update
+    sudo apt-get install -y certbot python3-certbot-nginx  # Install Certbot for NGINX
+
     # Run Certbot command to obtain or renew SSL certificate
+    sudo certbot --nginx -d your-domain.com
   displayName: 'Obtain or Renew SSL Certificate'
 
 - script: |
