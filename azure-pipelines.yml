@@ -24,3 +24,19 @@ steps:
     #python main.py
     gunicorn -w 4 -b 0.0.0.0:5000 main:app
   displayName: 'Run Program'
+
+- powershell: |
+    $publicIP = Invoke-RestMethod -Uri http://ipinfo.io/json | Select-Object -ExpandProperty ip
+    Write-Host "##vso[task.setvariable variable=PublicIP]$publicIP"
+  displayName: 'Get Public IP'
+
+- powershell: |
+    $dnsName = "your-dns-name-here"  # Replace with your actual DNS name
+    Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
+  displayName: 'Set DNS Name'
+
+- script: |
+    echo "Public IP: $(PublicIP)"
+    echo "DNS Name: $(DNSName)"
+    # Use these values to access your service
+  displayName: 'Print Values'
