@@ -25,6 +25,17 @@ steps:
   displayName: 'Get Public IP'
 
 - powershell: |
+    # Install the Azure PowerShell module if not already installed
+    Install-Module -Name Az
+    # Connect to your Azure account
+    Connect-AzAccount
+    # Create a DNS zone
+    New-AzDnsZone -ResourceGroupName "YourResourceGroup" -Name "DR-PARRBOT.com"
+    # Add an A record to the DNS zone
+    Add-AzDnsRecordSet -ResourceGroupName "YourResourceGroup" -ZoneName "DR-PARRBOT.com" -RecordType A -Name "www" -IPv4Address "192.168.1.1"
+  displayName: 'creating domain'
+
+- powershell: |
     $dnsName = "DR-PARRBOT"  # Replace with your actual DNS name
     Write-Host "##vso[task.setvariable variable=DNSName]$dnsName"
   displayName: 'Set DNS Name'
@@ -43,6 +54,7 @@ steps:
     #openssl genpkey -algorithm RSA -out key.pem -aes256
     openssl genpkey -algorithm RSA -out key.pem -aes256 -pass env:MY_PASSPHRASE
     #openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+    openssl req -new -key key.pem -out csr.pem
   displayName: 'SSL Cert openssl'
 
 - script: | 
@@ -53,6 +65,7 @@ steps:
 
 - script: |
     less main.py
+    python -m http.server 5000
     #python main.py
     gunicorn -w 4 -b 0.0.0.0:5000 main:app
   displayName: 'Run Program'
