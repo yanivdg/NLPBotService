@@ -11,7 +11,7 @@ jobs:
         id: setup-python
       - name: List main folders
         run: |
-          cd /home/runner/work/NLPBotService/
+          cd /home/runner/work/NLPBotService/NLPBotService/
           ls -R
         id: dir-folder-all
           
