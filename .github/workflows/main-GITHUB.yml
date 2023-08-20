@@ -11,7 +11,7 @@ jobs:
         id: setup-python
       - name: dir folder
         run: |
-          sudo find / -name blablaydblabla.fnd
+          dir *NLPBotService* /s
         id: dir-folder-all
                 
       - name: Install Dependencies
