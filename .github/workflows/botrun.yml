@@ -12,7 +12,9 @@ jobs:
       - name: dir folder
         run: |
           ls
+          dir
         id: dir folder all
+        
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
