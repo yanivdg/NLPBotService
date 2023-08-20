@@ -1,0 +1,12 @@
+nltk
+scikit-learn
+numpy
+requests
+beautifulsoup4
+flask
+logging
+gunicorn
+pytest-azure-devops
+Flask[async]
+aiohttp
+asyncio
