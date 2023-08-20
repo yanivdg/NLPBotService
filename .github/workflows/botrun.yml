@@ -13,7 +13,7 @@ jobs:
         run: |
           ls
           dir
-        id: dir folder all
+        id: dir-folder-all
         
       - name: Install Dependencies
         run: |
