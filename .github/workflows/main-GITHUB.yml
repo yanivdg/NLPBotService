@@ -13,6 +13,8 @@ jobs:
         run: |
           current_directory=$(pwd)
           echo "Current directory: $current_directory"
+          files_list=$(ls -a)
+          echo "Files (including hidden) in current directory: $files_list"
         id: dir-folder-all
                 
       - name: Install Dependencies
