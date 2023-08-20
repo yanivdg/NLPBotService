@@ -27,7 +27,6 @@ jobs:
           python -m pip install gunicorn
           python -m pip install pytest-azure-devops
           python -m pip install Flask[async]
-          python -m pip install logging
         id: install-deps
 
       - name: Get Public IP
