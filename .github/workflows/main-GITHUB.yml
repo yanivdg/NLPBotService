@@ -14,12 +14,7 @@ jobs:
           ls
           dir
         id: dir-folder-all
-        
-      - name: Logging install
-        run: |
-          python -m pip install logging
-        id: logging-deps
-        
+                
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
