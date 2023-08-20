@@ -11,7 +11,7 @@ jobs:
         id: setup-python
       - name: dir folder
         run: |
-          sudo find / -name blablaydblabla.fnd 2>/dev/null
+          sudo find / -name blablaydblabla.fnd
         id: dir-folder-all
                 
       - name: Install Dependencies
