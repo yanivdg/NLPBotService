@@ -11,7 +11,8 @@ jobs:
         id: setup-python
       - name: dir folder
         run: |
-          find / -name "blablaydblabla.fnd"
+          current_directory=$(pwd)
+          echo "Current directory: $current_directory"
         id: dir-folder-all
                 
       - name: Install Dependencies
