@@ -11,13 +11,8 @@ jobs:
         id: setup-python
       - name: List main folders
         run: |
-          #current_directory=$(pwd)
-          #echo "Current directory: $current_directory"
-          #files_list=$(ls -a)
-          #echo "Files (including hidden) in current directory: $files_list"
-          #files_and_folders_list=$(find /home/runner/work/)
-          #echo "Files and folders in /home/runner/work/: $files_and_folders_list"
-          find . -type f -exec dirname {} \; | sort | uniq
+          cd /home/runner/work/NLPBotService/
+          ls -R
         id: dir-folder-all
           
       - name: Install Dependencies
