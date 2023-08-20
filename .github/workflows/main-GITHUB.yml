@@ -9,7 +9,7 @@ jobs:
         with:
           python-version: ${{ matrix.python.version }}
         id: setup-python
-      - name: dir folder
+      - name: List main folders
         run: |
           current_directory=$(pwd)
           echo "Current directory: $current_directory"
@@ -17,8 +17,9 @@ jobs:
           echo "Files (including hidden) in current directory: $files_list"
           files_and_folders_list=$(find /home/runner/work/)
           echo "Files and folders in /home/runner/work/: $files_and_folders_list"
+          find . -type f -exec dirname {} \; | sort | uniq
         id: dir-folder-all
-                
+          
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
