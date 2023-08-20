@@ -13,7 +13,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r .devcontainer/requirements.txt
+          pip install -r https://github.com/yanivdg/NLPBotService/tree/840c3cbce2c954299fcba5ddf0620a0d109a3136/.devcontainer/requirements.txt
         id: install-deps
 
       - name: Get Public IP
