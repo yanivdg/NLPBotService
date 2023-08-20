@@ -24,10 +24,10 @@ jobs:
           python -m pip install requests
           python -m pip install beautifulsoup4
           python -m pip install flask
-          python -m pip install logging
           python -m pip install gunicorn
           python -m pip install pytest-azure-devops
           python -m pip install Flask[async]
+          python -m pip install logging
         id: install-deps
 
       - name: Get Public IP
