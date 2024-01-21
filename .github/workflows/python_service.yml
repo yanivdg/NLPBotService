@@ -1,0 +1,39 @@
+name: Python Service Workflow
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Runs every hour at the beginning of the hour
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      python:
+        image: python:3.12  # You can change the version as needed
+        ports:
+          - 8000:8000  # Expose port for your service
+        options: --name python-service  # Give a name to your service
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12  # Set the Python version
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install bs4 scikit-learn requests
+          # Install dependencies using 'python -m pip' command
+      - name: push files
+        run: |
+          git config --global user.name 'yanivdg'
+          git config --global user.email 'yaniv.dg.work@gmail.com'
+          # Perform actions if changes are present, such as git add, commit, and push.
+          git add .
+          git commit -m "add files"
+          git push origin main
