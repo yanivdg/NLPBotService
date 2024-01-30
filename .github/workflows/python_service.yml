@@ -2,7 +2,7 @@ name: Python Service Workflow
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # Runs every hour at the beginning of the hour
+    - cron: '0 */2 * * *'  # Runs every hour at the beginning of the hour
 
 jobs:
   build:
